@@ -24,84 +24,83 @@
 
 % Paper size. We'll print to the edge of the paper, and let the
 % printer crop the margins it needs.
-/pageheight 297 mm def
-/pagewidth 210 mm def
+/PageHeight 297 mm def
+/PageWidth 210 mm def
 
 % Heights of the components of the lines.
-/baseheight 0.25 in def
-/ascenderheight baseheight 2 mul def
-/descenderheight ascenderheight def
-/gap 0.1 in def
+/BaseHeight 0.25 in def
+/AscenderHeight BaseHeight 2 mul def
+/DescenderHeight AscenderHeight def
+/Gap 0.1 in def
 
 % Gap between the diagonal guide lines.
-/xgap 0.5 in def
+/XGap 0.5 in def
 
 % Y offset to start at, given printers can't print all the way to the
 % edge of the paper, so we can choose a margin size.
-/yoffset gap def
+/BottomMargin Gap def
 % Ditto for X offset
-/xoffset gap def
+/LeftMargin Gap def
 
 % Width of the lines
-/lineweight 0.5 pt def
+/LineWeight 0.5 pt def
 
 % Angle of the guide lines
-/guideangle 55 def
+/GuideAngle 55 def
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % And the actual implementation
 
-/fullheight descenderheight baseheight ascenderheight add add def
+/FullHeight DescenderHeight BaseHeight AscenderHeight add add def
 
 % Find the number of repeated staves we need to do...
-/yrepeats
-    pageheight gap sub
-    fullheight gap add
+/YRepeats
+    PageHeight Gap sub
+    FullHeight Gap add
     div
-    cvi 1 add
+    cvi
 def
 
 % and the number of italic lines per stave.
-/xrepeats
-    pagewidth xoffset sub xgap div cvi 1 add
+/XRepeats
+    PageWidth LeftMargin sub XGap div cvi
 def
 
 % Draw a diagonal guide line
-/italicline {
+/ItalicLine {
     currentpoint
-    fullheight guideangle cos mul fullheight rlineto
+    FullHeight GuideAngle cos mul FullHeight rlineto
     moveto
 } def
 
 % Draw a line and move up the given amount
-/crossline {
+/HorizontalLine {
     currentpoint
-    pagewidth 0 rlineto
+    PageWidth 0 rlineto
     3 2 roll add % Add the parameter to the Y coordinate
     moveto
 } def
 
-
 % Draw one "stave"
-/stave {
-    descenderheight crossline
-    baseheight crossline
-    ascenderheight crossline
-    gap crossline
+/Stave {
+    DescenderHeight HorizontalLine
+    BaseHeight HorizontalLine
+    AscenderHeight HorizontalLine
+    Gap HorizontalLine
 } def
 
 newpath
-    lineweight setlinewidth
-    0 yoffset moveto
-    yrepeats {
+    LineWeight setlinewidth
+    0 BottomMargin moveto
+    YRepeats {
         currentpoint
-        xoffset 0 rmoveto
-        xrepeats {
-            italicline
-            xgap 0 rmoveto
+        LeftMargin 0 rmoveto
+        XRepeats {
+            ItalicLine
+            XGap 0 rmoveto
         } repeat
         moveto
-        stave
+        Stave
     } repeat
 stroke
 showpage
