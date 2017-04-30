@@ -76,6 +76,14 @@ def
     sub 2 div % And calculate the margin to put on each side
 def
 
+% And centre all the staves
+/YOffset
+    MarginHeight
+    YRepeats FullHeight Gap add mul % Height of all the staves...
+    Gap sub % but avoid fencepost error on the gaps
+    sub 2 div % And find the margin to add
+def
+
 % Draw a diagonal guide line
 /ItalicLine {
     currentpoint
@@ -101,7 +109,7 @@ def
 
 newpath
     LineWeight setlinewidth
-    LeftMargin BottomMargin moveto
+    LeftMargin BottomMargin YOffset add moveto
     YRepeats {
         currentpoint
         XOffset 0 rmoveto
