@@ -36,11 +36,11 @@
 % Gap between the diagonal guide lines.
 /XGap 0.5 in def
 
-% Y offset to start at, given printers can't print all the way to the
-% edge of the paper, so we can choose a margin size.
+%Offsets around the edge of the page
+/TopMargin Gap def
 /BottomMargin Gap def
-% Ditto for X offset
 /LeftMargin Gap def
+/RightMargin Gap def
 
 % Width of the lines
 /LineWeight 0.5 pt def
@@ -53,30 +53,40 @@
 
 /FullHeight DescenderHeight BaseHeight AscenderHeight add add def
 
+/MarginHeight PageHeight TopMargin sub BottomMargin sub def
+/MarginWidth PageWidth LeftMargin sub RightMargin sub def
+
+/ItalicWidth FullHeight GuideAngle cos mul def
+
 % Find the number of repeated staves we need to do...
 /YRepeats
-    PageHeight Gap sub
-    FullHeight Gap add
-    div
-    cvi
+    MarginHeight FullHeight Gap add div cvi
 def
 
 % and the number of italic lines per stave.
 /XRepeats
-    PageWidth LeftMargin sub XGap div cvi
+    MarginWidth ItalicWidth sub XGap div cvi
+    1 add % Avoid fencepost error
+def
+
+% Centre the diagonal strokes
+/XOffset
+    MarginWidth
+    XRepeats 1 sub XGap mul ItalicWidth add % Width of space used
+    sub 2 div % And calculate the margin to put on each side
 def
 
 % Draw a diagonal guide line
 /ItalicLine {
     currentpoint
-    FullHeight GuideAngle cos mul FullHeight rlineto
+    ItalicWidth FullHeight rlineto
     moveto
 } def
 
 % Draw a line and move up the given amount
 /HorizontalLine {
     currentpoint
-    PageWidth 0 rlineto
+    MarginWidth 0 rlineto
     3 2 roll add % Add the parameter to the Y coordinate
     moveto
 } def
@@ -91,10 +101,10 @@ def
 
 newpath
     LineWeight setlinewidth
-    0 BottomMargin moveto
+    LeftMargin BottomMargin moveto
     YRepeats {
         currentpoint
-        LeftMargin 0 rmoveto
+        XOffset 0 rmoveto
         XRepeats {
             ItalicLine
             XGap 0 rmoveto
