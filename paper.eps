@@ -27,23 +27,28 @@
 /PageHeight 297 mm def
 /PageWidth 210 mm def
 
-% Heights of the components of the lines.
-/BaseHeight 0.25 in def
-/AscenderHeight BaseHeight 2 mul def
-/DescenderHeight AscenderHeight def
-/Gap 0.1 in def
-
-% Gap between the diagonal guide lines.
-/XGap 0.5 in def
-
 %Offsets around the edge of the page
-/TopMargin Gap def
-/BottomMargin Gap def
-/LeftMargin Gap def
-/RightMargin Gap def
+/TopMargin 0.25 in def
+/BottomMargin 0.25 in def
+/LeftMargin 0.25 in def
+/RightMargin 0.25 in def
 
 % Width of the lines
 /LineWeight 0.5 pt def
+% And greyness of the lines - let's try to make them a little fainter.
+/GreyLevel 0.5 def
+
+% Parameters based on "Mastering Copperplate Calligraphy" by Eleanor
+% Winters.
+
+% Heights of the components of the lines.
+/WaistHeight 0.25 in def
+/AscenderHeight WaistHeight 1.5 mul def
+/DescenderHeight AscenderHeight def
+/StaveGap 0.1 in def
+
+% Gap between the diagonal guide lines.
+/SlantGap 0.5 in def
 
 % Angle of the guide lines
 /GuideAngle 55 def
@@ -51,43 +56,43 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % And the actual implementation
 
-/FullHeight DescenderHeight BaseHeight AscenderHeight add add def
+/FullHeight DescenderHeight WaistHeight AscenderHeight add add def
 
 /MarginHeight PageHeight TopMargin sub BottomMargin sub def
 /MarginWidth PageWidth LeftMargin sub RightMargin sub def
 
-/ItalicWidth FullHeight GuideAngle cos mul def
+/SlantWidth FullHeight GuideAngle cos mul def
 
 % Find the number of repeated staves we need to do...
 /YRepeats
-    MarginHeight FullHeight Gap add div cvi
+    MarginHeight FullHeight StaveGap add div cvi
 def
 
-% and the number of italic lines per stave.
+% and the number of slanting lines per stave.
 /XRepeats
-    MarginWidth ItalicWidth sub XGap div cvi
+    MarginWidth SlantWidth sub SlantGap div cvi
     1 add % Avoid fencepost error
 def
 
 % Centre the diagonal strokes
 /XOffset
     MarginWidth
-    XRepeats 1 sub XGap mul ItalicWidth add % Width of space used
+    XRepeats 1 sub SlantGap mul SlantWidth add % Width of space used
     sub 2 div % And calculate the margin to put on each side
 def
 
 % And centre all the staves
 /YOffset
     MarginHeight
-    YRepeats FullHeight Gap add mul % Height of all the staves...
-    Gap sub % but avoid fencepost error on the gaps
+    YRepeats FullHeight StaveGap add mul % Height of all the staves...
+    StaveGap sub % but avoid fencepost error on the gaps
     sub 2 div % And find the margin to add
 def
 
 % Draw a diagonal guide line
-/ItalicLine {
+/SlantLine {
     currentpoint
-    ItalicWidth FullHeight rlineto
+    SlantWidth FullHeight rlineto
     moveto
 } def
 
@@ -102,9 +107,9 @@ def
 % Draw one "stave"
 /Stave {
     DescenderHeight HorizontalLine
-    BaseHeight HorizontalLine
+    WaistHeight HorizontalLine
     AscenderHeight HorizontalLine
-    Gap HorizontalLine
+    StaveGap HorizontalLine
 } def
 
 newpath
@@ -114,12 +119,13 @@ newpath
         currentpoint
         XOffset 0 rmoveto
         XRepeats {
-            ItalicLine
-            XGap 0 rmoveto
+            SlantLine
+            SlantGap 0 rmoveto
         } repeat
         moveto
         Stave
     } repeat
+    GreyLevel setgray
 stroke
 showpage
 
