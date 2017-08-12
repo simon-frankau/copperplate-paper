@@ -68,7 +68,7 @@
 /MarginHeight PageHeight TopMargin sub BottomMargin sub def
 /MarginWidth PageWidth LeftMargin sub RightMargin sub def
 
-/SlantWidth FullHeight GuideAngle cos mul def
+/SlantWidth FullHeight GuideAngle cos GuideAngle sin div mul def
 
 % Find the number of repeated staves we need to do...
 /YRepeats
