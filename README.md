@@ -1,5 +1,7 @@
 # Copperplate practice paper generator
 
+![A line of copperplate practice guide lines](./example.png)
+
 `paper.eps` is an Encapsulated PostScript file for a sheet of
 Copperplate calligraphy practice paper.
 
@@ -18,3 +20,10 @@ Winters. The book describes how to produce practice paper by hand.
 Where's the fun in that? I automated the process. I could have knocked
 up something in Inkscape, but having a program allows me to tweak
 parameters as I like.
+
+## paper.pdf
+
+For those who don't have ps2pdf installed, or an interest in
+customising their practice paper, [`paper.pdf`](./paper.pdf) can be
+used directly. It has fairly thick, dark lines that can be printed on
+a guidesheet to pop under the sheet you're writing on.
